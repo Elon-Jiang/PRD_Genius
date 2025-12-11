@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PRD Genius - AI Product Manager</title>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#2563eb',
+              secondary: '#475569',
+            }
+          }
+        }
+      }
+    </script>
+    <!-- Pre-load fonts for better aesthetics -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      body { 
+        font-family: 'Inter', sans-serif;
+        /* REMOVED h-screen and overflow-hidden to allow print scrolling */
+      }
+      /* Custom scrollbar for generated content areas */
+      .custom-scroll::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      .custom-scroll::-webkit-scrollbar-track {
+        background: #f1f5f9; 
+      }
+      .custom-scroll::-webkit-scrollbar-thumb {
+        background: #cbd5e1; 
+        border-radius: 4px;
+      }
+      .custom-scroll::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8; 
+      }
+      
+      /* PRINT STYLES - CRITICAL FOR PDF EXPORT */
+      @media print {
+        @page {
+          margin: 1cm;
+          size: auto;
+        }
+        
+        /* Force reset everything */
+        html, body, #root {
+          height: auto !important;
+          min-height: 100% !important;
+          width: 100% !important;
+          overflow: visible !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          display: block !important;
+          background-color: white !important;
+        }
+
+        /* Hide the dashboard UI specifically */
+        .dashboard-ui {
+          display: none !important;
+        }
+
+        /* Show the print doc */
+        .print-doc {
+          display: block !important;
+        }
+
+        /* Ensure page breaks work */
+        .page-break-after {
+          break-after: page;
+          page-break-after: always;
+        }
+        .page-break-before {
+          break-before: page;
+          page-break-before: always;
+        }
+        .page-break-inside-avoid {
+          break-inside: avoid;
+          page-break-inside: avoid;
+        }
+        
+        /* Hide scrollbars during print */
+        ::-webkit-scrollbar {
+          display: none;
+        }
+
+        .print-doc svg {
+          max-width: 100% !important;
+          height: auto !important;
+        }
+        .print-doc svg text {
+          font-size: 16px !important;
+        }
+        .print-doc pre {
+          font-size: 12px !important;
+          line-height: 1.7;
+        }
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-markdown": "https://aistudiocdn.com/react-markdown@^10.1.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "mermaid": "https://aistudiocdn.com/mermaid@^11.12.1"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-slate-50 text-slate-900">
+    <div id="root"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+{
+  "name": "PRD Genius",
+  "description": "An AI-powered Product Requirement Document (PRD) generator. It streamlines the workflow from natural language description to feature breakdown, competitive analysis, visual diagrams, and high-fidelity HTML/Tailwind prototypes.",
+  "requestFramePermissions": []
+}
