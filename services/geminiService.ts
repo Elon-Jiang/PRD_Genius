@@ -497,12 +497,16 @@ export const generatePrototype = async (features: Feature[], description: string
     - Do NOT markdown wrap.
   `;
 
-  const response = await ai.models.generateContent({
+  const result = await ai.models.generateContentStream({
     model: modelPro, 
     contents: prompt,
   });
 
-  let code = response.text || "";
+  let code = "";
+  for await (const chunk of result) {
+    code += chunk.text;
+  }
+   
   // Cleanup markdown
   code = code.replace(/```html/g, '').replace(/```/g, '').trim();
   return code;
@@ -530,12 +534,16 @@ export const refinePrototype = async (currentHtml: string, feedback: string): Pr
     ${currentHtml.slice(0, 30000)} 
   `;
 
-  const response = await ai.models.generateContent({
+  const result = await ai.models.generateContentStream({
     model: modelPro, 
     contents: prompt,
   });
 
-  let code = response.text || "";
+  let code = "";
+  for await (const chunk of result) {
+    code += chunk.text;
+  }
+ 
   code = code.replace(/```html/g, '').replace(/```/g, '').trim();
   return code;
 };
