@@ -3,7 +3,12 @@ import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { Feature, UserStory, CompetitorAnalysis } from "../types";
 
 const apiKey = process.env.API_KEY || '';
-const ai = new GoogleGenAI({ apiKey });
+const ai = new GoogleGenAI({ 
+  apiKey,
+  httpOptions: {
+    baseUrl: 'https://gemini.jzedong.com',
+  },
+});
 
 const modelFlash = 'gemini-2.5-flash';
 // Using pro for complex coding/diagramming tasks
