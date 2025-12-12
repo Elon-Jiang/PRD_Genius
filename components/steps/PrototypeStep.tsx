@@ -19,6 +19,7 @@ const PrototypeStep: React.FC<PrototypeStepProps> = ({
   data, setData, onRefine, isRefining, refinementInput, setRefinementInput, onGenerate, onExport
 }) => {
   const [isCodeViewMaximized, setIsCodeViewMaximized] = useState(false);
+  const [isPreviewFull, setIsPreviewFull] = useState(false);
   
   // Search & Replace State
   const [showSearch, setShowSearch] = useState(false);
@@ -193,10 +194,18 @@ const PrototypeStep: React.FC<PrototypeStepProps> = ({
         </div>
 
         {/* Preview */}
-        <div className={`flex-1 bg-[#0d1117] relative flex flex-col items-center ${isCodeViewMaximized ? 'hidden' : 'block'}`}>
+        <div className={isPreviewFull ? "fixed inset-0 z-[100] bg-[#0d1117] flex flex-col" : `flex-1 bg-[#0d1117] relative flex flex-col items-center ${isCodeViewMaximized ? 'hidden' : 'block'}`}>
           
-          <div className="w-full h-8 bg-[#161b22] border-b border-slate-800 flex items-center justify-center text-xs text-slate-500">
-             Web Desktop Preview (Full Width)
+          <div className="w-full h-8 bg-[#161b22] border-b border-slate-800 flex items-center justify-between px-4 text-xs text-slate-500">
+             <span></span>
+             <span>Web Desktop Preview (Full Width)</span>
+             <button 
+               onClick={() => setIsPreviewFull(!isPreviewFull)}
+               className="p-1 hover:text-white transition-colors"
+               title={isPreviewFull ? "退出全屏" : "全屏预览"}
+             >
+               {isPreviewFull ? <X size={14} /> : <Maximize2 size={14} />}
+             </button>
           </div>
 
           <div className="flex-1 w-full bg-[#0d1117] overflow-hidden flex items-center justify-center">

@@ -12,7 +12,8 @@ const ai = new GoogleGenAI({
 
 const modelFlash = 'gemini-2.5-flash';
 // Using pro for complex coding/diagramming tasks
-const modelPro = 'gemini-3-pro-preview';
+const modelPro = 'gemini-2.5-flash';
+//const modelPro = 'gemini-3-pro-preview';
 
 /**
  * Decomposes the product description into Features and User Stories.
@@ -456,13 +457,13 @@ export const generatePrototype = async (features: Feature[], description: string
     Key Features: ${featureList}
     
     **CRITICAL REQUIREMENT: DESKTOP-ONLY WEB DASHBOARD**
-    Analyze the description for User Roles (e.g., Student, Teacher, Admin).
-    You MUST create a **Multi-View System** contained in a single HTML file.
+    Analyze the description to identify at least 2-3 key User Roles (e.g., User, Admin, etc.) specific to this product.
+    You MUST create a **Multi-View System** contained in a single HTML file that allows switching between these roles.
     
     1.  **Architecture (SPA):**
         - **Target Device**: DESKTOP WEB ONLY. Do NOT implement mobile hamburgers or responsive collapsing logic unless absolutely necessary for layout. Assume a wide screen (1440px+).
         - **Layout**: Sidebar Navigation (Left), Header (Top), Main Content Area (Center).
-        - **Role Switching**: Implement a prominent "Switch Role" dropdown in the Header or Sidebar to toggle between 'Student', 'Teacher', 'Admin' views instantly.
+        - **Role Switching**: Implement a prominent "Switch Role" dropdown in the Header or Sidebar to toggle between the identified roles instantly.
     
     2.  **Design System (Dark Tech / Dia Browser Style):**
         - **Theme**: Dark Mode default. Use 'bg-slate-900', 'text-slate-100'.
@@ -474,16 +475,15 @@ export const generatePrototype = async (features: Feature[], description: string
         - **Navigation**: Clicking sidebar links must update the main content area dynamically.
         - **Interactivity**: 
           - Tabs for switching content.
-          - Modals for forms (e.g., "Add Course").
+          - Modals for forms.
           - Toast notifications for actions (e.g., "Saved successfully").
-        - **Charts**: Use Chart.js (via CDN) for Analytics dashboards.
+        - **Charts**: Use Chart.js (via CDN) for Analytics dashboards where appropriate.
         - **Tables**: Create detailed, realistic data tables with status badges and action buttons.
     
     4.  **Content Depth:**
-        - **Student View**: Dashboard (Progress), My Courses (Grid), Video Player (Mock), Assignments (Upload form).
-        - **Teacher View**: Course Management (Table), Grading (List), Student Analytics (Charts).
-        - **Admin View**: User Mgmt (Table with Actions), Platform Stats (Big Number Cards + Charts), Settings.
-        - **Realistic Data**: Use mock data relevant to the industry. No "Lorem Ipsum".
+        - **Dynamic Roles**: For each identified role, create specific views and dashboards relevant to their tasks.
+        - **Detailed Features**: Implement the UI for the "Key Features" listed above.
+        - **Realistic Data**: Use mock data relevant to the **${description}** industry. No "Lorem Ipsum".
         - **Language**: Chinese (Simplified).
 
     5. **CRITICAL SECURITY & STABILITY RULES:**
