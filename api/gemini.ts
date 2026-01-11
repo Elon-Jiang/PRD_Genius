@@ -19,12 +19,16 @@ interface CompetitorAnalysis {
 }
 
 // Initialize Gemini Client
-const apiKey = process.env.API_KEY || "";
+const apiKey = process.env.API_KEY;
+
+if (!apiKey) {
+  console.error("API_KEY is missing in environment variables");
+}
+
 const ai = new GoogleGenAI({
-  apiKey,
-  httpOptions: {
-    baseUrl: "https://gemini.jzedong.com",
-  },
+  apiKey: apiKey || "",
+  // Vercel serverless functions usually run in regions that can access Google directly.
+  // Removing the custom baseUrl to avoid potential proxy issues in server-side environment.
 });
 
 const modelFlash = "gemini-2.5-flash";
@@ -66,11 +70,12 @@ export default async function handler(req, res) {
       default:
         return res.status(400).json({ error: "Invalid action" });
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("API Error:", error);
-    return res
-      .status(500)
-      .json({ error: error.message || "Internal Server Error" });
+    // Return detailed error message for debugging
+    const errorMessage = error.message || "Internal Server Error";
+    const errorDetails = error.response ? JSON.stringify(error.response) : "";
+    return res.status(500).json({ error: `${errorMessage} ${errorDetails}` });
   }
 }
 
