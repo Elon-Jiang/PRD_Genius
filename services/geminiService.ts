@@ -1,4 +1,4 @@
-
+// ... (previous code)
 import { Feature, UserStory, CompetitorAnalysis } from "../types";
 
 const API_ENDPOINT = '/api/gemini';
@@ -47,8 +47,8 @@ async function callApiText(action: string, payload: any) {
 /**
  * Decomposes the product description into Features and User Stories.
  */
-export const generateBreakdown = async (description: string): Promise<{ features: Feature[], userStories: UserStory[] }> => {
-  return callApiJson('generateBreakdown', { description });
+export const generateBreakdown = async (description: string, language: string): Promise<{ features: Feature[], userStories: UserStory[] }> => {
+  return callApiJson('generateBreakdown', { description, language });
 };
 
 /**
@@ -57,62 +57,63 @@ export const generateBreakdown = async (description: string): Promise<{ features
 export const refineBreakdown = async (
   currentFeatures: Feature[], 
   currentUserStories: UserStory[], 
-  feedback: string
+  feedback: string,
+  language: string
 ): Promise<{ features: Feature[], userStories: UserStory[] }> => {
-  return callApiJson('refineBreakdown', { currentFeatures, currentUserStories, feedback });
+  return callApiJson('refineBreakdown', { currentFeatures, currentUserStories, feedback, language });
 };
 
 /**
  * Generates competitive analysis in Structured JSON format.
  */
-export const generateAnalysis = async (productName: string, description: string): Promise<CompetitorAnalysis> => {
-  return callApiJson('generateAnalysis', { productName, description });
+export const generateAnalysis = async (productName: string, description: string, language: string): Promise<CompetitorAnalysis> => {
+  return callApiJson('generateAnalysis', { productName, description, language });
 };
 
 /**
  * Refines the competitive analysis based on user feedback.
  */
-export const refineAnalysis = async (currentAnalysis: CompetitorAnalysis, feedback: string): Promise<CompetitorAnalysis> => {
-  return callApiJson('refineAnalysis', { currentAnalysis, feedback });
+export const refineAnalysis = async (currentAnalysis: CompetitorAnalysis, feedback: string, language: string): Promise<CompetitorAnalysis> => {
+  return callApiJson('refineAnalysis', { currentAnalysis, feedback, language });
 };
 
 /**
  * Generates a Mermaid diagram code string.
  */
-export const generateDiagram = async (features: Feature[]): Promise<string> => {
-  const result = await callApiJson('generateDiagram', { features });
+export const generateDiagram = async (features: Feature[], language: string): Promise<string> => {
+  const result = await callApiJson('generateDiagram', { features, language });
   return result.code;
 };
 
 /**
  * Refines the Mermaid diagram based on user feedback.
  */
-export const refineDiagram = async (currentCode: string, feedback: string): Promise<string> => {
-  const result = await callApiJson('refineDiagram', { currentCode, feedback });
+export const refineDiagram = async (currentCode: string, feedback: string, language: string): Promise<string> => {
+  const result = await callApiJson('refineDiagram', { currentCode, feedback, language });
   return result.code;
 };
 
 /**
  * Generates a Mermaid Mindmap code string.
  */
-export const generateMindMap = async (productName: string, features: Feature[], userStories: UserStory[]): Promise<string> => {
-  const result = await callApiJson('generateMindMap', { productName, features, userStories });
+export const generateMindMap = async (productName: string, features: Feature[], userStories: UserStory[], language: string): Promise<string> => {
+  const result = await callApiJson('generateMindMap', { productName, features, userStories, language });
   return result.code;
 };
 
 /**
  * Refines the Mermaid Mindmap based on user feedback.
  */
-export const refineMindMap = async (currentCode: string, feedback: string): Promise<string> => {
-  const result = await callApiJson('refineMindMap', { currentCode, feedback });
+export const refineMindMap = async (currentCode: string, feedback: string, language: string): Promise<string> => {
+  const result = await callApiJson('refineMindMap', { currentCode, feedback, language });
   return result.code;
 };
 
 /**
  * Generates a single-file HTML prototype using Tailwind CSS.
  */
-export const generatePrototype = async (features: Feature[], description: string): Promise<string> => {
-  let code = await callApiText('generatePrototype', { features, description });
+export const generatePrototype = async (features: Feature[], description: string, language: string): Promise<string> => {
+  let code = await callApiText('generatePrototype', { features, description, language });
   
   // Cleanup markdown
   code = code.replace(/```html/g, '').replace(/```/g, '').trim();
@@ -122,8 +123,8 @@ export const generatePrototype = async (features: Feature[], description: string
 /**
  * Refines the HTML prototype based on user feedback.
  */
-export const refinePrototype = async (currentHtml: string, feedback: string): Promise<string> => {
-  let code = await callApiText('refinePrototype', { currentHtml, feedback });
+export const refinePrototype = async (currentHtml: string, feedback: string, language: string): Promise<string> => {
+  let code = await callApiText('refinePrototype', { currentHtml, feedback, language });
  
   code = code.replace(/```html/g, '').replace(/```/g, '').trim();
   return code;
@@ -132,7 +133,7 @@ export const refinePrototype = async (currentHtml: string, feedback: string): Pr
 /**
  * General Chat Assistant
  */
-export const sendChatMessage = async (history: {role: 'user' | 'ai', content: string}[], message: string): Promise<string> => {
-  const result = await callApiJson('chat', { history, message });
+export const sendChatMessage = async (history: {role: 'user' | 'ai', content: string}[], message: string, language: string): Promise<string> => {
+  const result = await callApiJson('chat', { history, message, language });
   return result.text;
 };

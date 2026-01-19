@@ -1,3 +1,4 @@
+// ... (imports and types)
 import { GoogleGenAI, Type } from "@google/genai";
 
 // Define simple types locally to avoid import issues from parent directory
@@ -35,6 +36,14 @@ const modelFlash = "gemini-2.5-flash";
 // Using pro for complex coding/diagramming tasks
 // Keeping consistency with original file which used flash for pro variable
 const modelPro = "gemini-2.5-flash";
+
+// Helper to get language instruction
+function getLanguageInstruction(language: string = 'zh'): string {
+  if (language === 'en') {
+    return "IMPORTANT: Output everything in English.";
+  }
+  return "IMPORTANT: Output everything in Chinese (Simplified).";
+}
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -79,7 +88,8 @@ export default async function handler(req, res) {
   }
 }
 
-async function handleGenerateBreakdown({ description }, res) {
+async function handleGenerateBreakdown({ description, language }, res) {
+  const langInstruction = getLanguageInstruction(language);
   const prompt = `
     Act as a Senior Product Manager.
     Based on the following product description, break it down into:
@@ -90,7 +100,7 @@ async function handleGenerateBreakdown({ description }, res) {
     
     Prioritize features based on MVP (Minimum Viable Product) logic.
     
-    IMPORTANT: Output everything in Chinese (Simplified).
+    ${langInstruction}
   `;
 
   const response = await ai.models.generateContent({
@@ -139,13 +149,14 @@ async function handleGenerateBreakdown({ description }, res) {
 }
 
 async function handleRefineBreakdown(
-  { currentFeatures, currentUserStories, feedback },
+  { currentFeatures, currentUserStories, feedback, language },
   res
 ) {
   const context = JSON.stringify({
     features: currentFeatures,
     userStories: currentUserStories,
   });
+  const langInstruction = getLanguageInstruction(language);
 
   const prompt = `
     Act as a Senior Product Manager.
@@ -160,7 +171,7 @@ async function handleRefineBreakdown(
     - If the user asks to modify, modify it.
     - Keep the existing IDs if possible, or generate new unique string IDs for new items.
     
-    IMPORTANT: Output everything in Chinese (Simplified). Return the full updated JSON structure.
+    ${langInstruction} Return the full updated JSON structure.
   `;
 
   const response = await ai.models.generateContent({
@@ -208,7 +219,8 @@ async function handleRefineBreakdown(
   throw new Error("Failed to refine breakdown");
 }
 
-async function handleGenerateAnalysis({ productName, description }, res) {
+async function handleGenerateAnalysis({ productName, description, language }, res) {
+  const langInstruction = getLanguageInstruction(language);
   const prompt = `
     Conduct a comprehensive competitive analysis for a product named "${productName}".
     Description: "${description}"
@@ -222,12 +234,12 @@ async function handleGenerateAnalysis({ productName, description }, res) {
     Each competitor object must have:
     - id: unique string
     - name: Competitor Name
-    - coreAdvantage: Key strength (核心优势)
-    - mainDisadvantage: Key weakness (主要劣势)
-    - overlap: Functional overlap level (High/Medium/Low) (功能重合度)
-    - ourAdvantage: How we win (我们如何胜出)
+    - coreAdvantage: Key strength
+    - mainDisadvantage: Key weakness
+    - overlap: Functional overlap level (High/Medium/Low)
+    - ourAdvantage: How we win
     
-    IMPORTANT: Output everything in Chinese (Simplified).
+    ${langInstruction}
   `;
 
   const response = await ai.models.generateContent({
@@ -273,8 +285,9 @@ async function handleGenerateAnalysis({ productName, description }, res) {
   throw new Error("Failed to generate analysis");
 }
 
-async function handleRefineAnalysis({ currentAnalysis, feedback }, res) {
+async function handleRefineAnalysis({ currentAnalysis, feedback, language }, res) {
   const context = JSON.stringify(currentAnalysis);
+  const langInstruction = getLanguageInstruction(language);
 
   const prompt = `
     Act as a Senior Product Manager.
@@ -288,7 +301,7 @@ async function handleRefineAnalysis({ currentAnalysis, feedback }, res) {
     Task: Update the analysis content (summary or competitors list) to satisfy the user's request.
     - If adding a competitor, generate a new ID.
     - Return the full updated JSON structure.
-    - Ensure everything is in Chinese (Simplified).
+    - ${langInstruction}
   `;
 
   const response = await ai.models.generateContent({
@@ -334,8 +347,9 @@ async function handleRefineAnalysis({ currentAnalysis, feedback }, res) {
   throw new Error("Failed to refine analysis");
 }
 
-async function handleGenerateDiagram({ features }, res) {
+async function handleGenerateDiagram({ features, language }, res) {
   const featureList = features.map((f) => `- ${f.name}`).join("\n");
+  const langInstruction = language === 'en' ? "Use English for the node labels." : "Use Chinese (Simplified) for the node labels.";
 
   const prompt = `
     Act as a Senior Business Analyst.
@@ -351,14 +365,14 @@ async function handleGenerateDiagram({ features }, res) {
     Start the code with "graph TD".
     
     IMPORTANT SYNTAX RULES:
-    1. Use Chinese (Simplified) for the node labels.
+    1. ${langInstruction}
     2. CRITICAL: You MUST enclose ALL node labels in double quotes.
-       Correct: NodeA["用户注册"]
-       Incorrect: NodeA[user register]
+       Correct: NodeA["Label"]
+       Incorrect: NodeA[label]
     3. **CRITICAL: DO NOT USE Double Quotes (") INSIDE the node content.**
        Incorrect: NodeA["显示"错误""]
        Incorrect: NodeA["显示\"错误\""]
-       **Correct**: NodeA["显示'错误'"] (Use single quotes or Chinese quotes “”)
+       **Correct**: NodeA["显示'错误'"] (Use single quotes)
     4. CRITICAL: Match your brackets correctly! 
        - For Standard Nodes: use square brackets [ ]. Example: A["开始"]
        - For Decision Nodes: use curly braces { }. Example: B{"验证通过?"}
@@ -382,7 +396,7 @@ async function handleGenerateDiagram({ features }, res) {
   return res.json({ code });
 }
 
-async function handleRefineDiagram({ currentCode, feedback }, res) {
+async function handleRefineDiagram({ currentCode, feedback, language }, res) {
   const prompt = `
     Act as a Mermaid.js expert.
     I have an existing Mermaid diagram code.
@@ -417,7 +431,7 @@ async function handleRefineDiagram({ currentCode, feedback }, res) {
 }
 
 async function handleGenerateMindMap(
-  { productName, features, userStories },
+  { productName, features, userStories, language },
   res
 ) {
   const featureList = features
@@ -426,6 +440,7 @@ async function handleGenerateMindMap(
   const storyList = userStories
     .map((s) => `- ${s.role}: ${s.action}`)
     .join("\n");
+  const langInstruction = getLanguageInstruction(language).replace("IMPORTANT: Output everything in", "Use").replace(".", ".");
 
   const prompt = `
     Act as a Product Architect.
@@ -467,7 +482,7 @@ async function handleGenerateMindMap(
     4. Ensure the root node uses round brackets: root("Name")
     
     Return ONLY the raw mermaid code string. 
-    Use Chinese (Simplified).
+    ${langInstruction}
   `;
 
   const response = await ai.models.generateContent({
@@ -487,7 +502,9 @@ async function handleGenerateMindMap(
   return res.json({ code });
 }
 
-async function handleRefineMindMap({ currentCode, feedback }, res) {
+async function handleRefineMindMap({ currentCode, feedback, language }, res) {
+  const langInstruction = getLanguageInstruction(language).replace("IMPORTANT: Output everything in", "Ensure text is in").replace(".", ".");
+
   const prompt = `
     Act as a Mermaid.js expert.
     I have an existing Mermaid Mindmap code.
@@ -503,7 +520,7 @@ async function handleRefineMindMap({ currentCode, feedback }, res) {
     - **WRAP ALL TEXT IN DOUBLE QUOTES** to prevent syntax errors.
     - **Avoid parentheses () inside text**. Replace with dashes - or square brackets [].
     - Return ONLY the raw mermaid code string.
-    - Ensure text is in Chinese (Simplified).
+    - ${langInstruction}
   `;
 
   const response = await ai.models.generateContent({
@@ -520,9 +537,10 @@ async function handleRefineMindMap({ currentCode, feedback }, res) {
   return res.json({ code });
 }
 
-async function handleGeneratePrototype({ features, description }, res) {
+async function handleGeneratePrototype({ features, description, language }, res) {
   // Use names only to keep the prompt smaller to avoid RPC errors
   const featureList = features.map((f) => `${f.name}`).join(", ");
+  const lang = language === 'en' ? "English" : "Chinese (Simplified)";
 
     const prompt = `
     Act as a **World-Class Frontend Architect**.
@@ -566,7 +584,7 @@ async function handleGeneratePrototype({ features, description }, res) {
         - **Dynamic Views**: Create specific views relevant to the identified logic (Single or Multi-role).
         - **Detailed Features**: Implement the UI for the "Key Features" listed above.
         - **Realistic Data**: Use mock data relevant to the **${description}** industry.
-        - **Language**: Chinese (Simplified).
+        - **Language**: ${lang}.
 
     5.  **CRITICAL SECURITY & STABILITY RULES:**
         - **NO External Links**: Do NOT use <a href="..."> for navigation. It will crash the iframe.
@@ -594,7 +612,8 @@ async function handleGeneratePrototype({ features, description }, res) {
   res.end();
 }
 
-async function handleRefinePrototype({ currentHtml, feedback }, res) {
+async function handleRefinePrototype({ currentHtml, feedback, language }, res) {
+  const lang = language === 'en' ? "English" : "Chinese (Simplified)";
   const prompt = `
     Act as a Senior Frontend Engineer (UI/UX Expert).
     I have an existing HTML/Tailwind prototype.
@@ -607,7 +626,7 @@ async function handleRefinePrototype({ currentHtml, feedback }, res) {
     - **Maintain Logic**: Do not break existing logical flows (Role switching or Single view).
     - **CRITICAL SECURITY**: Do NOT introduce <a href="..."> links. Use JS onclick for everything. href must be "javascript:void(0)".
     - Return ONLY the raw HTML code.
-    - Ensure all new text is in Chinese (Simplified).
+    - Ensure all new text is in ${lang}.
     
     Current HTML (truncated context):
     ${currentHtml.slice(0, 30000)} 
@@ -656,12 +675,13 @@ function getResponseText(response: any): string {
   return '';
 }
 
-async function handleChat({ history, message }, res) {
+async function handleChat({ history, message, language }, res) {
+  const lang = language === 'en' ? "English" : "Chinese (Simplified)";
   const chat = ai.chats.create({
     model: modelFlash,
     config: {
       systemInstruction:
-        "You are a helpful Product Manager Assistant. You can help answer questions about product design, market research, technical feasibility, or general inquiries. Answer concisely and in Chinese (Simplified).",
+        `You are a helpful Product Manager Assistant. You can help answer questions about product design, market research, technical feasibility, or general inquiries. Answer concisely and in ${lang}.`,
     },
     history: history.map((msg) => ({
       role: msg.role === "user" ? "user" : "model",

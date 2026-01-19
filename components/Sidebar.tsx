@@ -1,7 +1,8 @@
 
 import React from 'react';
-import { Bot, Zap, Layers, BarChart, FileText, Network, Layout, Undo2, Redo2, Printer } from 'lucide-react';
+import { Bot, Zap, Layers, BarChart, FileText, Network, Layout, Undo2, Redo2, Printer, Globe } from 'lucide-react';
 import { Step } from '../types';
+import { useTranslation } from 'react-i18next';
 
 interface SidebarProps {
   currentStep: Step;
@@ -22,13 +23,20 @@ const Sidebar: React.FC<SidebarProps> = ({
   canRedo,
   onExportPDF
 }) => {
+  const { t, i18n } = useTranslation();
+
+  const toggleLanguage = () => {
+    const newLang = i18n.language.startsWith('zh') ? 'en' : 'zh';
+    i18n.changeLanguage(newLang);
+  };
+
   const steps = [
-    { id: Step.INPUT, label: '产品愿景', icon: Zap },
-    { id: Step.BREAKDOWN, label: '需求拆解', icon: Layers },
-    { id: Step.ANALYSIS, label: '竞品分析', icon: BarChart },
-    { id: Step.DIAGRAMS, label: '流程图', icon: FileText },
-    { id: Step.MINDMAP, label: '思维导图', icon: Network },
-    { id: Step.PROTOTYPE, label: 'HTML 原型', icon: Layout },
+    { id: Step.INPUT, label: t('steps.input'), icon: Zap },
+    { id: Step.BREAKDOWN, label: t('steps.breakdown'), icon: Layers },
+    { id: Step.ANALYSIS, label: t('steps.analysis'), icon: BarChart },
+    { id: Step.DIAGRAMS, label: t('steps.diagrams'), icon: FileText },
+    { id: Step.MINDMAP, label: t('steps.mindmap'), icon: Network },
+    { id: Step.PROTOTYPE, label: t('steps.prototype'), icon: Layout },
   ];
 
   return (
@@ -36,9 +44,9 @@ const Sidebar: React.FC<SidebarProps> = ({
       <div className="p-6 border-b border-slate-100">
         <div className="flex items-center gap-2 text-primary font-bold text-xl">
           <Bot size={24} />
-          <span>PRD Genius</span>
+          <span>{t('app_title')}</span>
         </div>
-        <p className="text-xs text-slate-500 mt-1">AI 产品经理助手</p>
+        <p className="text-xs text-slate-500 mt-1">{t('app_subtitle')}</p>
       </div>
       
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
@@ -69,7 +77,7 @@ const Sidebar: React.FC<SidebarProps> = ({
             onClick={undo}
             disabled={!canUndo}
             className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
-            title="撤销 (Ctrl+Z)"
+            title={`${t('common.undo')} (Ctrl+Z)`}
           >
             <Undo2 size={20} />
           </button>
@@ -77,9 +85,16 @@ const Sidebar: React.FC<SidebarProps> = ({
             onClick={redo}
             disabled={!canRedo}
             className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
-            title="重做 (Ctrl+Y)"
+            title={`${t('common.redo')} (Ctrl+Y)`}
           >
             <Redo2 size={20} />
+          </button>
+          <button
+            onClick={toggleLanguage}
+            className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors"
+            title="Switch Language"
+          >
+            <Globe size={20} />
           </button>
         </div>
         
@@ -87,11 +102,11 @@ const Sidebar: React.FC<SidebarProps> = ({
           onClick={onExportPDF}
           className="w-full py-2 bg-slate-800 text-white rounded-lg text-sm font-medium hover:bg-slate-900 flex items-center justify-center gap-2"
         >
-          <Printer size={16} /> 导出 PDF
+          <Printer size={16} /> {t('common.export_pdf')}
         </button>
 
         <div className="text-xs text-slate-400 text-center pt-2">
-          Powered by Gemini 2.5 Flash
+          {t('common.powered_by')}
         </div>
       </div>
     </div>

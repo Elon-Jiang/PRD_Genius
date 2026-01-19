@@ -1,8 +1,9 @@
-
+// ... (imports)
 import React, { useState } from 'react';
 import { Download, RefreshCw, Code, Copy, ExternalLink, Maximize2, Play, Search, Replace, AlignLeft, X } from 'lucide-react';
 import { PrdState } from '../../types';
 import RefinementPanel from '../RefinementPanel';
+import { useTranslation } from 'react-i18next';
 
 interface PrototypeStepProps {
   data: PrdState;
@@ -18,6 +19,7 @@ interface PrototypeStepProps {
 const PrototypeStep: React.FC<PrototypeStepProps> = ({
   data, setData, onRefine, isRefining, refinementInput, setRefinementInput, onGenerate, onExport
 }) => {
+  const { t } = useTranslation();
   const [isCodeViewMaximized, setIsCodeViewMaximized] = useState(false);
   const [isPreviewFull, setIsPreviewFull] = useState(false);
   
@@ -31,7 +33,7 @@ const PrototypeStep: React.FC<PrototypeStepProps> = ({
     const regex = new RegExp(findText, 'g');
     const newHtml = data.prototypeHtml.replace(regex, replaceText);
     setData((prev) => ({ ...prev, prototypeHtml: newHtml }));
-    alert(`已完成替换`);
+    alert(`Replaced all occurrences`);
   };
 
   const handleFormatCode = () => {
@@ -65,20 +67,20 @@ const PrototypeStep: React.FC<PrototypeStepProps> = ({
   return (
     <div className="w-full h-full flex flex-col">
       <div className="flex justify-between items-center mb-4 px-8 pt-2 shrink-0">
-        <h2 className="text-2xl font-bold text-slate-100">交互原型 (Web Desktop)</h2>
+        <h2 className="text-2xl font-bold text-slate-100">{t('prototype_step.title')}</h2>
         <div className="flex gap-2">
            <button 
             onClick={onExport}
             disabled={!data.prototypeHtml}
             className="px-4 py-2 text-slate-900 bg-white border border-white rounded-lg text-sm font-medium hover:bg-slate-200 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <Download size={16} /> 导出 HTML
+            <Download size={16} /> {t('prototype_step.export_html') || 'Export HTML'}
           </button>
            <button 
             onClick={onGenerate}
             className="px-4 py-2 text-white bg-slate-800 border border-slate-700 rounded-lg text-sm font-medium hover:bg-slate-700 flex items-center gap-2"
           >
-            <RefreshCw size={16} /> 重新编码
+            <RefreshCw size={16} /> {t('prototype_step.recode') || 'Re-code'}
           </button>
         </div>
       </div>
@@ -89,7 +91,7 @@ const PrototypeStep: React.FC<PrototypeStepProps> = ({
           setInput={setRefinementInput}
           onSend={onRefine}
           isRefining={isRefining}
-          placeholder="例如：'添加一个教师端的管理界面' 或 '把背景改为深色'..."
+          placeholder={t('prototype_step.refine_placeholder')}
         />
       </div>
 
@@ -100,20 +102,20 @@ const PrototypeStep: React.FC<PrototypeStepProps> = ({
           <div className="flex flex-col bg-[#161b22] border-b border-slate-800">
             <div className="flex items-center justify-between p-2">
                 <div className="text-slate-400 text-xs font-mono uppercase tracking-wider flex items-center gap-2">
-                <Code size={12} /> HTML & Tailwind
+                <Code size={12} /> {t('prototype_step.html_tailwind')}
                 </div>
                 <div className="flex items-center gap-1">
                 <button 
                     onClick={() => setShowSearch(!showSearch)}
                     className={`p-1.5 rounded transition-colors ${showSearch ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
-                    title="查找和替换"
+                    title={t('prototype_step.find_replace')}
                 >
                     <Search size={14} />
                 </button>
                 <button 
                     onClick={handleFormatCode}
                     className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded transition-colors"
-                    title="格式化代码"
+                    title={t('prototype_step.format_code')}
                 >
                     <AlignLeft size={14} />
                 </button>
@@ -121,10 +123,10 @@ const PrototypeStep: React.FC<PrototypeStepProps> = ({
                 <button 
                     onClick={() => {
                     navigator.clipboard.writeText(data.prototypeHtml);
-                    alert('代码已复制到剪贴板');
+                    alert(t('prototype_step.code_copied'));
                     }}
                     className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded transition-colors"
-                    title="复制全部"
+                    title={t('prototype_step.copy_all')}
                 >
                     <Copy size={14} />
                 </button>
@@ -134,14 +136,14 @@ const PrototypeStep: React.FC<PrototypeStepProps> = ({
                     window.open(URL.createObjectURL(blob), '_blank');
                     }}
                     className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded transition-colors"
-                    title="在新标签页预览"
+                    title={t('prototype_step.preview_new_tab')}
                 >
                     <ExternalLink size={14} />
                 </button>
                 <button 
                     onClick={() => setIsCodeViewMaximized(!isCodeViewMaximized)}
                     className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded transition-colors"
-                    title={isCodeViewMaximized ? "恢复默认" : "展开代码"}
+                    title={isCodeViewMaximized ? "Restore Default" : "Expand Code"}
                 >
                     <Maximize2 size={14} />
                 </button>
@@ -155,7 +157,7 @@ const PrototypeStep: React.FC<PrototypeStepProps> = ({
                         <div className="relative flex-1">
                             <input 
                                 className="w-full bg-[#0d1117] border border-slate-700 text-slate-200 text-xs rounded px-2 py-1 focus:border-blue-500 outline-none"
-                                placeholder="查找内容..."
+                                placeholder={t('prototype_step.search_placeholder')}
                                 value={findText}
                                 onChange={e => setFindText(e.target.value)}
                             />
@@ -163,7 +165,7 @@ const PrototypeStep: React.FC<PrototypeStepProps> = ({
                         <div className="relative flex-1">
                             <input 
                                 className="w-full bg-[#0d1117] border border-slate-700 text-slate-200 text-xs rounded px-2 py-1 focus:border-blue-500 outline-none"
-                                placeholder="替换为..."
+                                placeholder={t('prototype_step.replace_placeholder')}
                                 value={replaceText}
                                 onChange={e => setReplaceText(e.target.value)}
                             />
@@ -173,7 +175,7 @@ const PrototypeStep: React.FC<PrototypeStepProps> = ({
                         onClick={handleReplaceAll}
                         className="px-2 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-500 flex items-center gap-1"
                     >
-                        <Replace size={12} /> 替换
+                        <Replace size={12} /> {t('prototype_step.replace_btn')}
                     </button>
                     <button 
                         onClick={() => setShowSearch(false)}
@@ -198,11 +200,11 @@ const PrototypeStep: React.FC<PrototypeStepProps> = ({
           
           <div className="w-full h-8 bg-[#161b22] border-b border-slate-800 flex items-center justify-between px-4 text-xs text-slate-500">
              <span></span>
-             <span>Web Desktop Preview (Full Width)</span>
+             <span>{t('prototype_step.preview_title')}</span>
              <button 
                onClick={() => setIsPreviewFull(!isPreviewFull)}
                className="p-1 hover:text-white transition-colors"
-               title={isPreviewFull ? "退出全屏" : "全屏预览"}
+               title={isPreviewFull ? "Exit Fullscreen" : "Fullscreen Preview"}
              >
                {isPreviewFull ? <X size={14} /> : <Maximize2 size={14} />}
              </button>
@@ -219,7 +221,7 @@ const PrototypeStep: React.FC<PrototypeStepProps> = ({
             ) : (
               <div className="text-center text-slate-500">
                 <Play size={48} className="mx-auto mb-4 opacity-50" />
-                <p>准备生成原型。</p>
+                <p>{t('prototype_step.empty_state')}</p>
               </div>
             )}
           </div>

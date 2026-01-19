@@ -1,0 +1,133 @@
+{
+  "translation": {
+    "app_title": "PRD Genius",
+    "app_subtitle": "AI 产品经理助手",
+    "common": {
+      "loading": "加载中...",
+      "generating": "生成中...",
+      "save": "保存",
+      "cancel": "取消",
+      "export_pdf": "导出 PDF",
+      "undo": "撤销",
+      "redo": "重做",
+      "powered_by": "Powered by Gemini 2.5 Flash",
+      "product_name": "产品名称",
+      "product_description": "产品描述"
+    },
+    "steps": {
+      "input": "产品愿景",
+      "breakdown": "需求拆解",
+      "analysis": "竞品分析",
+      "diagrams": "流程图",
+      "mindmap": "思维导图",
+      "prototype": "HTML 原型"
+    },
+    "input_step": {
+      "title": "产品愿景",
+      "subtitle": "描述你的产品想法，AI 将帮你生成完整的 PRD 文档。",
+      "placeholder": "例如：一个智能健身应用，根据用户的日程安排生成个性化的锻炼计划...",
+      "product_name_placeholder": "例如：智能任务管理专业版",
+      "generate_btn": "生成需求拆解"
+    },
+    "breakdown_step": {
+        "title": "需求拆解",
+        "subtitle": "AI 生成的核心功能和用户故事。您可以编辑它们或让 AI 进行优化。",
+        "features_title": "核心功能",
+        "stories_title": "用户故事",
+        "next_btn": "下一步：竞品分析",
+        "refine_placeholder": "例如：增加一个社交分享功能...",
+        "add_story": "添加故事",
+        "add_feature": "添加功能",
+        "as_a": "作为一个",
+        "i_want_to": "我想要",
+        "so_that": "以便于"
+    },
+    "analysis_step": {
+        "title": "竞品分析",
+        "subtitle": "市场格局与差异化策略。",
+        "next_btn": "下一步：流程图",
+        "refine_placeholder": "例如：与 Keep 进行对比...",
+        "add_competitor": "添加竞品",
+        "summary_title": "差异化总结",
+        "summary_placeholder": "总结我们的产品如何脱颖而出...",
+        "competitor_name": "竞品名称",
+        "core_advantage": "核心优势",
+        "main_disadvantage": "主要劣势",
+        "our_advantage": "我方策略",
+        "empty_state": "未找到竞品。",
+        "overlap_high": "高",
+        "overlap_medium": "中",
+        "overlap_low": "低"
+    },
+    "diagrams_step": {
+        "title": "流程图",
+        "subtitle": "定义用户交互流程和系统逻辑。",
+        "next_btn": "下一步：思维导图",
+        "refine_placeholder": "例如：增加登录步骤...",
+        "toggle_code": "切换代码模式",
+        "visual": "可视化",
+        "code": "代码",
+        "split_screen": "分屏",
+        "restore": "恢复",
+        "mermaid_source": "Mermaid 源码",
+        "empty_state": "生成后将在此处显示预览。"
+    },
+    "mindmap_step": {
+        "title": "思维导图",
+        "next_btn": "下一步：HTML 原型",
+        "refine_placeholder": "例如：展开用户画像部分...",
+        "empty_state": "生成后将在此处显示预览。"
+    },
+    "prototype_step": {
+        "title": "HTML 原型",
+        "export_html": "导出 HTML",
+        "recode": "重新编码",
+        "refine_placeholder": "例如：把按钮颜色改成蓝色...",
+        "find_replace": "查找和替换",
+        "format_code": "格式化代码",
+        "code_copied": "代码已复制到剪贴板",
+        "copy_all": "复制全部",
+        "preview_new_tab": "在新标签页预览",
+        "preview_title": "Web Desktop Preview (全宽)",
+        "empty_state": "准备生成原型。",
+        "html_tailwind": "HTML & Tailwind",
+        "search_placeholder": "查找...",
+        "replace_placeholder": "替换为...",
+        "replace_btn": "替换",
+        "replaced_all": "已替换所有匹配项"
+    },
+    "refinement_panel": {
+        "title": "AI 优化助手",
+        "optimizing": "优化中...",
+        "send": "发送"
+    },
+    "visual_editors": {
+        "nodes": "节点",
+        "links": "连线",
+        "new_node": "新节点",
+        "add_node": "添加新节点",
+        "add_link": "添加新连线",
+        "delete_node": "删除节点",
+        "switch_to_process": "点击切换为：流程节点",
+        "switch_to_decision": "点击切换为：判断节点",
+        "enter_node_name": "输入节点名称...",
+        "link_label": "连线:",
+        "link_desc_placeholder": "描述...",
+        "solid_line": "实线",
+        "dotted_line": "虚线",
+        "thick_line": "粗线",
+        "parse_error": "部分代码无法解析，建议在代码模式下查看。",
+        "visual_editing": "可视化编辑",
+        "cant_parse_mindmap": "无法解析思维导图结构",
+        "add_child": "添加子节点"
+    },
+    "chat_overlay": {
+        "title": "AI 助手",
+        "placeholder": "询问关于市场、技术或产品的问题..."
+    },
+    "chat": {
+        "placeholder": "问点什么...",
+        "send": "发送"
+    }
+  }
+}

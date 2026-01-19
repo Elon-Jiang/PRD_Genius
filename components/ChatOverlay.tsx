@@ -1,8 +1,9 @@
-
+// ... (imports)
 import React, { useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { MessageSquare, X, PanelRight, Sparkles, User, Bot, Send } from 'lucide-react';
 import { ChatMessage } from '../types';
+import { useTranslation } from 'react-i18next';
 
 interface ChatOverlayProps {
   isOpen: boolean;
@@ -23,6 +24,7 @@ const ChatOverlay: React.FC<ChatOverlayProps> = ({
   onSend,
   isLoading
 }) => {
+  const { t } = useTranslation();
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,7 +40,7 @@ const ChatOverlay: React.FC<ChatOverlayProps> = ({
         className={`fixed bottom-6 right-6 p-4 rounded-full shadow-lg transition-all duration-300 z-50 ${
           isOpen ? 'bg-slate-200 text-slate-600' : 'bg-blue-600 text-white hover:bg-blue-700'
         }`}
-        title="AI 助手"
+        title={t('chat_overlay.title') || "AI Assistant"}
       >
         {isOpen ? <X size={24} /> : <MessageSquare size={24} />}
       </button>
@@ -51,7 +53,7 @@ const ChatOverlay: React.FC<ChatOverlayProps> = ({
         <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
           <div className="flex items-center gap-2 text-slate-800 font-semibold">
             <Sparkles className="text-blue-600" size={18} />
-            <span>AI 助手</span>
+            <span>{t('chat_overlay.title') || "AI Assistant"}</span>
           </div>
           <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-slate-600">
             <PanelRight size={18} />
@@ -111,7 +113,7 @@ const ChatOverlay: React.FC<ChatOverlayProps> = ({
                   onSend();
                 }
               }}
-              placeholder="询问关于市场、技术或产品的问题..."
+              placeholder={t('chat_overlay.placeholder') || "Ask about market, tech or product..."}
               className="w-full pl-4 pr-12 py-3 rounded-xl border border-slate-200 focus:border-blue-400 focus:ring-0 resize-none h-12 max-h-32 text-sm custom-scroll"
             />
             <button 

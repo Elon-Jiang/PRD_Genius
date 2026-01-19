@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Plus, Trash2, ArrowRight, Square, Diamond, Box, Link as LinkIcon, AlertCircle } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface VisualFlowchartEditorProps {
   mermaidCode: string;
@@ -22,6 +23,7 @@ interface FlowLink {
 }
 
 const VisualFlowchartEditor: React.FC<VisualFlowchartEditorProps> = ({ mermaidCode, onChange }) => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<'nodes' | 'links'>('nodes');
   const [nodes, setNodes] = useState<FlowNode[]>([]);
   const [links, setLinks] = useState<FlowLink[]>([]);
@@ -162,9 +164,9 @@ const VisualFlowchartEditor: React.FC<VisualFlowchartEditorProps> = ({ mermaidCo
       setParseError(null);
     } catch (e) {
       console.error("Parse error", e);
-      setParseError("部分代码无法解析，建议在代码模式下查看。");
+      setParseError(t('visual_editors.parse_error'));
     }
-  }, [mermaidCode]); 
+  }, [mermaidCode, t]); 
 
   // --- Generator ---
   const updateCode = (newNodes: FlowNode[], newLinks: FlowLink[]) => {
@@ -203,7 +205,7 @@ const VisualFlowchartEditor: React.FC<VisualFlowchartEditorProps> = ({ mermaidCo
   // --- Actions ---
   const handleAddNode = () => {
     const id = `Node_${Date.now()}`;
-    const newNode: FlowNode = { id, label: '新节点', type: 'process' };
+    const newNode: FlowNode = { id, label: t('visual_editors.new_node'), type: 'process' };
     const updatedNodes = [...nodes, newNode];
     setNodes(updatedNodes);
     updateCode(updatedNodes, links);
@@ -259,7 +261,7 @@ const VisualFlowchartEditor: React.FC<VisualFlowchartEditorProps> = ({ mermaidCo
             activeTab === 'nodes' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'
           }`}
         >
-          <Box size={16} /> 节点 ({nodes.length})
+          <Box size={16} /> {t('visual_editors.nodes')} ({nodes.length})
         </button>
         <button
           onClick={() => setActiveTab('links')}
@@ -267,7 +269,7 @@ const VisualFlowchartEditor: React.FC<VisualFlowchartEditorProps> = ({ mermaidCo
             activeTab === 'links' ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'
           }`}
         >
-          <LinkIcon size={16} /> 连线 ({links.length})
+          <LinkIcon size={16} /> {t('visual_editors.links')} ({links.length})
         </button>
       </div>
 
@@ -293,7 +295,7 @@ const VisualFlowchartEditor: React.FC<VisualFlowchartEditorProps> = ({ mermaidCo
                         ? 'bg-amber-50 border-amber-200 text-amber-600' 
                         : 'bg-blue-50 border-blue-200 text-blue-600'
                      }`}
-                     title={node.type === 'decision' ? '点击切换为：流程节点' : '点击切换为：判断节点'}
+                     title={node.type === 'decision' ? t('visual_editors.switch_to_process') : t('visual_editors.switch_to_decision')}
                    >
                      {node.type === 'decision' ? <Diamond size={14} /> : <Square size={14} />}
                    </button>
@@ -303,7 +305,7 @@ const VisualFlowchartEditor: React.FC<VisualFlowchartEditorProps> = ({ mermaidCo
                      className="flex-1 text-sm border-slate-200 bg-slate-50 rounded px-2 py-1 focus:bg-white focus:ring-2 focus:ring-blue-100 focus:border-blue-300 outline-none transition-all w-full min-w-0"
                      value={node.label}
                      onChange={(e) => handleUpdateNode(node.id, 'label', e.target.value)}
-                     placeholder="输入节点名称..."
+                     placeholder={t('visual_editors.enter_node_name')}
                    />
 
                    <div className="shrink-0 text-slate-300 font-mono text-[10px] w-12 truncate text-right pointer-events-none" title={node.id}>
@@ -314,7 +316,7 @@ const VisualFlowchartEditor: React.FC<VisualFlowchartEditorProps> = ({ mermaidCo
                    <button 
                      onClick={() => handleDeleteNode(node.id)}
                      className="p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded transition-colors shrink-0"
-                     title="删除节点"
+                     title={t('visual_editors.delete_node')}
                    >
                      <Trash2 size={14} />
                    </button>
@@ -325,7 +327,7 @@ const VisualFlowchartEditor: React.FC<VisualFlowchartEditorProps> = ({ mermaidCo
                onClick={handleAddNode}
                className="w-full py-3 border-2 border-dashed border-slate-200 rounded-lg text-slate-500 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-all flex items-center justify-center gap-2 text-sm font-medium"
              >
-               <Plus size={16} /> 添加新节点
+               <Plus size={16} /> {t('visual_editors.add_node')}
              </button>
           </div>
         )}
@@ -368,21 +370,21 @@ const VisualFlowchartEditor: React.FC<VisualFlowchartEditorProps> = ({ mermaidCo
                   </div>
 
                   <div className="flex items-center gap-2 pl-2 border-l-2 border-slate-100">
-                     <span className="text-xs text-slate-400 shrink-0">连线:</span>
+                     <span className="text-xs text-slate-400 shrink-0">{t('visual_editors.link_label')}</span>
                      <input 
                        className="flex-1 text-xs border-slate-200 rounded px-2 py-1 focus:ring-1 focus:ring-blue-100 focus:border-blue-300 outline-none w-full min-w-0"
                        value={link.label}
                        onChange={(e) => handleUpdateLink(link.id, 'label', e.target.value)}
-                       placeholder="描述..."
+                       placeholder={t('visual_editors.link_desc_placeholder')}
                      />
                      <select 
                        className="text-xs border-slate-200 rounded px-1 py-1 bg-white shrink-0"
                        value={link.type}
                        onChange={(e) => handleUpdateLink(link.id, 'type', e.target.value as any)}
                      >
-                        <option value="solid">实线</option>
-                        <option value="dotted">虚线</option>
-                        <option value="thick">粗线</option>
+                        <option value="solid">{t('visual_editors.solid_line')}</option>
+                        <option value="dotted">{t('visual_editors.dotted_line')}</option>
+                        <option value="thick">{t('visual_editors.thick_line')}</option>
                      </select>
                   </div>
                </div>
@@ -392,7 +394,7 @@ const VisualFlowchartEditor: React.FC<VisualFlowchartEditorProps> = ({ mermaidCo
                onClick={handleAddLink}
                className="w-full py-3 border-2 border-dashed border-slate-200 rounded-lg text-slate-500 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-all flex items-center justify-center gap-2 text-sm font-medium"
              >
-               <Plus size={16} /> 添加新连线
+               <Plus size={16} /> {t('visual_editors.add_link')}
              </button>
           </div>
         )}

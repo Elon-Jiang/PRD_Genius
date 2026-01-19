@@ -1,8 +1,9 @@
-
+// ... (imports)
 import React from 'react';
 import { ArrowRight, Plus, Trash2 } from 'lucide-react';
 import { PrdState, UserStory, Feature } from '../../types';
 import RefinementPanel from '../RefinementPanel';
+import { useTranslation } from 'react-i18next';
 
 interface BreakdownStepProps {
   data: PrdState;
@@ -17,6 +18,7 @@ interface BreakdownStepProps {
 const BreakdownStep: React.FC<BreakdownStepProps> = ({ 
   data, setData, onRefine, isRefining, refinementInput, setRefinementInput, onNext 
 }) => {
+  const { t } = useTranslation();
 
   const updateUserStory = (id: string, field: keyof UserStory, value: string) => {
     setData((prev) => ({
@@ -37,9 +39,9 @@ const BreakdownStep: React.FC<BreakdownStepProps> = ({
       ...prev,
       userStories: [...prev.userStories, {
         id: Date.now().toString(),
-        role: '用户',
-        action: '新操作',
-        benefit: '价值'
+        role: 'User',
+        action: 'Action',
+        benefit: 'Benefit'
       }]
     }));
   };
@@ -56,8 +58,8 @@ const BreakdownStep: React.FC<BreakdownStepProps> = ({
       ...prev,
       features: [...prev.features, {
         id: Date.now().toString(),
-        name: '新功能',
-        description: '功能描述',
+        name: 'New Feature',
+        description: 'Description',
         priority: 'P1'
       }]
     }));
@@ -74,14 +76,14 @@ const BreakdownStep: React.FC<BreakdownStepProps> = ({
     <div className="max-w-4xl mx-auto w-full h-full flex flex-col">
       <div className="flex justify-between items-center mb-6 shrink-0">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900">需求拆解</h2>
-          <p className="text-slate-500 text-sm">AI 生成的功能和故事，您可以直接编辑或让 AI 调整。</p>
+          <h2 className="text-2xl font-bold text-slate-900">{t('breakdown_step.title')}</h2>
+          <p className="text-slate-500 text-sm">{t('breakdown_step.subtitle')}</p>
         </div>
         <button 
           onClick={onNext}
           className="px-4 py-2 bg-slate-900 text-white rounded-lg text-sm font-medium hover:bg-slate-800 flex items-center gap-2"
         >
-          下一步：竞品分析 <ArrowRight size={16} />
+          {t('breakdown_step.next_btn')} <ArrowRight size={16} />
         </button>
       </div>
 
@@ -92,18 +94,17 @@ const BreakdownStep: React.FC<BreakdownStepProps> = ({
           setInput={setRefinementInput}
           onSend={onRefine}
           isRefining={isRefining}
-          placeholder="例如：'增加一个社交登录功能' 或 '把所有P1优先级改为P0'..."
+          placeholder={t('breakdown_step.refine_placeholder')}
         />
 
         {/* User Stories Section */}
         <section>
           <div className="flex justify-between items-center mb-4">
              <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded uppercase">用户故事</span>
-                User Stories
+                <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded uppercase">{t('breakdown_step.stories_title')}</span>
              </h3>
              <button onClick={handleAddUserStory} className="text-sm text-primary hover:bg-blue-50 px-2 py-1 rounded flex items-center gap-1 transition-colors">
-                <Plus size={14} /> 新增故事
+                <Plus size={14} /> {t('breakdown_step.add_story')}
              </button>
           </div>
           <div className="grid gap-4">
@@ -112,24 +113,24 @@ const BreakdownStep: React.FC<BreakdownStepProps> = ({
                 <button 
                   onClick={() => handleDeleteUserStory(story.id)}
                   className="absolute top-2 right-2 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
-                  title="删除"
+                  title="Delete"
                 >
                   <Trash2 size={16} />
                 </button>
                 <div className="flex flex-wrap gap-2 text-sm text-slate-700 items-center pr-8">
-                  <span className="font-mono text-slate-400 text-xs whitespace-nowrap">作为一个</span>
+                  <span className="font-mono text-slate-400 text-xs whitespace-nowrap">{t('breakdown_step.as_a')}</span>
                   <input 
                     className="bg-slate-50 px-2 py-1 rounded border-transparent focus:border-primary focus:ring-0 border hover:border-slate-300 transition-colors min-w-[80px]"
                     value={story.role}
                     onChange={(e) => updateUserStory(story.id, 'role', e.target.value)}
                   />
-                  <span className="font-mono text-slate-400 text-xs whitespace-nowrap">我想要</span>
+                  <span className="font-mono text-slate-400 text-xs whitespace-nowrap">{t('breakdown_step.i_want_to')}</span>
                   <input 
                     className="flex-1 bg-slate-50 px-2 py-1 rounded border-transparent focus:border-primary focus:ring-0 border hover:border-slate-300 transition-colors min-w-[200px]"
                     value={story.action}
                     onChange={(e) => updateUserStory(story.id, 'action', e.target.value)}
                   />
-                  <span className="font-mono text-slate-400 text-xs whitespace-nowrap">以便于</span>
+                  <span className="font-mono text-slate-400 text-xs whitespace-nowrap">{t('breakdown_step.so_that')}</span>
                   <input 
                     className="flex-1 bg-slate-50 px-2 py-1 rounded border-transparent focus:border-primary focus:ring-0 border hover:border-slate-300 transition-colors min-w-[200px]"
                     value={story.benefit}
@@ -145,11 +146,10 @@ const BreakdownStep: React.FC<BreakdownStepProps> = ({
         <section>
           <div className="flex justify-between items-center mb-4">
              <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-               <span className="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded uppercase">功能规格</span>
-               Functional Features
+               <span className="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded uppercase">{t('breakdown_step.features_title')}</span>
              </h3>
              <button onClick={handleAddFeature} className="text-sm text-primary hover:bg-blue-50 px-2 py-1 rounded flex items-center gap-1 transition-colors">
-                <Plus size={14} /> 新增功能
+                <Plus size={14} /> {t('breakdown_step.add_feature')}
              </button>
           </div>
           <div className="grid gap-4">
@@ -158,7 +158,7 @@ const BreakdownStep: React.FC<BreakdownStepProps> = ({
                 <button 
                   onClick={() => handleDeleteFeature(feature.id)}
                   className="absolute top-4 right-4 text-slate-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                  title="删除"
+                  title="Delete"
                 >
                   <Trash2 size={16} />
                 </button>

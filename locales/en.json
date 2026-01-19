@@ -1,0 +1,133 @@
+{
+  "translation": {
+    "app_title": "PRD Genius",
+    "app_subtitle": "AI Product Manager Assistant",
+    "common": {
+      "loading": "Loading...",
+      "generating": "Generating...",
+      "save": "Save",
+      "cancel": "Cancel",
+      "export_pdf": "Export PDF",
+      "undo": "Undo",
+      "redo": "Redo",
+      "powered_by": "Powered by Gemini 2.5 Flash",
+      "product_name": "Product Name",
+      "product_description": "Product Description"
+    },
+    "steps": {
+      "input": "Product Vision",
+      "breakdown": "Requirements Breakdown",
+      "analysis": "Competitive Analysis",
+      "diagrams": "Flowcharts",
+      "mindmap": "Mind Map",
+      "prototype": "HTML Prototype"
+    },
+    "input_step": {
+      "title": "Product Vision",
+      "subtitle": "Describe your product idea, and AI will help you generate a complete PRD.",
+      "placeholder": "e.g., A smart fitness app that generates personalized workout plans based on user's calendar...",
+      "product_name_placeholder": "For example: Smart Task Management Pro",
+      "generate_btn": "Generate Requirements Breakdown"
+    },
+    "breakdown_step": {
+        "title": "Requirements Breakdown",
+        "subtitle": "AI generated features and user stories. You can edit them or ask AI to refine.",
+        "features_title": "Core Features",
+        "stories_title": "User Stories",
+        "next_btn": "Next: Competitive Analysis",
+        "refine_placeholder": "E.g., Add a social sharing feature...",
+        "add_story": "Add Story",
+        "add_feature": "Add Feature",
+        "as_a": "As a",
+        "i_want_to": "I want to",
+        "so_that": "so that"
+    },
+    "analysis_step": {
+        "title": "Competitive Analysis",
+        "subtitle": "Market landscape and differentiation strategy.",
+        "next_btn": "Next: Flowcharts",
+        "refine_placeholder": "E.g., Compare with MyFitnessPal...",
+        "add_competitor": "Add Competitor",
+        "summary_title": "Core Differentiation Summary",
+        "summary_placeholder": "Summarize how our product stands out...",
+        "competitor_name": "Competitor Name",
+        "core_advantage": "Core Advantage",
+        "main_disadvantage": "Main Disadvantage",
+        "our_advantage": "Our Advantage",
+        "empty_state": "No competitors found.",
+        "overlap_high": "High",
+        "overlap_medium": "Medium",
+        "overlap_low": "Low"
+    },
+    "diagrams_step": {
+        "title": "Flowcharts",
+        "subtitle": "Define user interaction flow and system logic.",
+        "next_btn": "Next: Mind Map",
+        "refine_placeholder": "E.g., Add a login step...",
+        "toggle_code": "Toggle Code Mode",
+        "visual": "Visual",
+        "code": "Code",
+        "split_screen": "Split Screen",
+        "restore": "Restore",
+        "mermaid_source": "Mermaid Source",
+        "empty_state": "Preview will appear here after generation."
+    },
+    "mindmap_step": {
+        "title": "Mind Map",
+        "next_btn": "Next: HTML Prototype",
+        "refine_placeholder": "E.g., Expand the user profile section...",
+        "empty_state": "Preview will appear here after generation."
+    },
+    "prototype_step": {
+        "title": "HTML Prototype",
+        "export_html": "Export HTML",
+        "recode": "Re-code",
+        "refine_placeholder": "E.g., Change the button color to blue...",
+        "find_replace": "Find & Replace",
+        "format_code": "Format Code",
+        "code_copied": "Code copied to clipboard",
+        "copy_all": "Copy All",
+        "preview_new_tab": "Preview in New Tab",
+        "preview_title": "Web Desktop Preview (Full Width)",
+        "empty_state": "Ready to generate prototype.",
+        "html_tailwind": "HTML & Tailwind",
+        "search_placeholder": "Find...",
+        "replace_placeholder": "Replace with...",
+        "replace_btn": "Replace",
+        "replaced_all": "Replaced all occurrences"
+    },
+    "refinement_panel": {
+        "title": "AI Optimization Assistant",
+        "optimizing": "Optimizing...",
+        "send": "Send"
+    },
+    "visual_editors": {
+        "nodes": "Nodes",
+        "links": "Links",
+        "new_node": "New Node",
+        "add_node": "Add Node",
+        "add_link": "Add Link",
+        "delete_node": "Delete Node",
+        "switch_to_process": "Switch to Process",
+        "switch_to_decision": "Switch to Decision",
+        "enter_node_name": "Enter node name...",
+        "link_label": "Link:",
+        "link_desc_placeholder": "Description...",
+        "solid_line": "Solid",
+        "dotted_line": "Dotted",
+        "thick_line": "Thick",
+        "parse_error": "Some code cannot be parsed, please view in code mode.",
+        "visual_editing": "Visual Editor",
+        "cant_parse_mindmap": "Cannot parse mind map structure",
+        "add_child": "Add Child Node"
+    },
+    "chat_overlay": {
+        "title": "AI Assistant",
+        "placeholder": "Ask about market, tech or product..."
+    },
+    "chat": {
+        "placeholder": "Ask anything...",
+        "send": "Send"
+    }
+  }
+}

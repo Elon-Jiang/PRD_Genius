@@ -1,10 +1,11 @@
-
+// ... (imports)
 import React, { useState } from 'react';
 import { ArrowRight, Code, Layout, Maximize2, Minimize2 } from 'lucide-react';
 import { PrdState } from '../../types';
 import MermaidRenderer from '../MermaidRenderer';
 import RefinementPanel from '../RefinementPanel';
 import VisualFlowchartEditor from '../VisualFlowchartEditor';
+import { useTranslation } from 'react-i18next';
 
 interface DiagramsStepProps {
   data: PrdState;
@@ -19,6 +20,7 @@ interface DiagramsStepProps {
 const DiagramsStep: React.FC<DiagramsStepProps> = ({
   data, setData, onRefine, isRefining, refinementInput, setRefinementInput, onNext
 }) => {
+  const { t } = useTranslation();
   const [showCode, setShowCode] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
 
@@ -26,23 +28,23 @@ const DiagramsStep: React.FC<DiagramsStepProps> = ({
     <div className="max-w-6xl mx-auto w-full h-full flex flex-col">
       <div className="flex justify-between items-center mb-6 shrink-0">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900">业务流程图</h2>
-          <p className="text-slate-500 text-sm">定义用户交互流程与系统逻辑。</p>
+          <h2 className="text-2xl font-bold text-slate-900">{t('diagrams_step.title')}</h2>
+          <p className="text-slate-500 text-sm">{t('diagrams_step.subtitle')}</p>
         </div>
         <div className="flex gap-2">
           <button 
             onClick={() => setShowCode(!showCode)} 
             className={`px-3 py-2 border rounded-lg text-sm font-medium flex items-center gap-2 transition-colors ${showCode ? 'bg-blue-50 border-blue-200 text-blue-700' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'}`}
-            title="切换代码模式"
+            title={t('diagrams_step.toggle_code')}
           >
             {showCode ? <Layout size={16} /> : <Code size={16} />}
-            {showCode ? '可视化' : '代码'}
+            {showCode ? t('diagrams_step.visual') : t('diagrams_step.code')}
           </button>
           <button 
             onClick={onNext}
             className="px-4 py-2 bg-slate-900 text-white rounded-lg text-sm font-medium hover:bg-slate-800 flex items-center gap-2"
           >
-            下一步：思维导图 <ArrowRight size={16} />
+            {t('diagrams_step.next_btn')} <ArrowRight size={16} />
           </button>
         </div>
       </div>
@@ -52,7 +54,7 @@ const DiagramsStep: React.FC<DiagramsStepProps> = ({
         setInput={setRefinementInput}
         onSend={onRefine}
         isRefining={isRefining}
-        placeholder="例如：'把流程改为从左到右' 或 '添加一个管理员审核节点'..."
+        placeholder={t('diagrams_step.refine_placeholder')}
       />
 
       {/* Main Content Area */}
@@ -68,14 +70,14 @@ const DiagramsStep: React.FC<DiagramsStepProps> = ({
             <button 
                onClick={() => setIsMaximized(!isMaximized)}
                className="absolute top-2 right-2 z-20 p-1.5 bg-white border border-slate-200 rounded text-slate-500 hover:text-blue-600 hover:border-blue-300 shadow-sm"
-               title={isMaximized ? "恢复" : "分屏编辑"}
+               title={isMaximized ? t('diagrams_step.restore') : t('diagrams_step.split_screen')}
             >
                {isMaximized ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
             </button>
 
            {showCode ? (
              <div className="bg-slate-900 h-full shadow-inner overflow-hidden flex flex-col pt-10">
-               <div className="text-slate-400 text-xs mb-2 font-mono px-4">Mermaid Source</div>
+               <div className="text-slate-400 text-xs mb-2 font-mono px-4">{t('diagrams_step.mermaid_source')}</div>
                <textarea 
                   className="w-full flex-1 bg-transparent text-slate-300 font-mono text-xs outline-none resize-none leading-relaxed custom-scroll p-4"
                   value={data.mermaidDiagram}
@@ -102,7 +104,7 @@ const DiagramsStep: React.FC<DiagramsStepProps> = ({
               <MermaidRenderer chart={data.mermaidDiagram} />
             ) : (
               <div className="h-full flex items-center justify-center text-slate-400 italic">
-                  生成图表后在此预览。
+                  {t('diagrams_step.empty_state')}
               </div>
             )}
           </div>

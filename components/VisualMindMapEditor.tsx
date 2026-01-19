@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Plus, Trash2, ChevronRight, ChevronDown, Type } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface MindMapNode {
   id: string;
@@ -16,6 +17,7 @@ interface VisualMindMapEditorProps {
 }
 
 const VisualMindMapEditor: React.FC<VisualMindMapEditorProps> = ({ mermaidCode, onChange, readOnly = false }) => {
+  const { t } = useTranslation();
   const [rootNode, setRootNode] = useState<MindMapNode | null>(null);
 
   // Parse Mermaid to Tree
@@ -140,7 +142,7 @@ const VisualMindMapEditor: React.FC<VisualMindMapEditorProps> = ({ mermaidCode, 
           ...node,
           children: [...node.children, {
             id: Math.random().toString(36).substr(2, 9),
-            text: '新节点',
+            text: t('visual_editors.new_node'),
             children: [],
             level: node.level + 1
           }]
@@ -198,7 +200,7 @@ const VisualMindMapEditor: React.FC<VisualMindMapEditorProps> = ({ mermaidCode, 
               <button 
                 onClick={() => addChild(node.id)}
                 className="p-1 text-green-600 hover:bg-green-50 rounded"
-                title="添加子节点"
+                title={t('visual_editors.add_child')}
               >
                 <Plus size={14} />
               </button>
@@ -206,7 +208,7 @@ const VisualMindMapEditor: React.FC<VisualMindMapEditorProps> = ({ mermaidCode, 
                 <button 
                   onClick={() => deleteNode(node.id)}
                   className="p-1 text-red-500 hover:bg-red-50 rounded"
-                  title="删除节点"
+                  title={t('visual_editors.delete_node')}
                 >
                   <Trash2 size={14} />
                 </button>
@@ -225,12 +227,12 @@ const VisualMindMapEditor: React.FC<VisualMindMapEditorProps> = ({ mermaidCode, 
   return (
     <div className={`h-full overflow-y-auto custom-scroll p-4 bg-white rounded-xl border border-slate-200 shadow-sm ${readOnly ? 'print:border-slate-300' : ''}`}>
        <div className="flex items-center gap-2 mb-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
-         <Type size={14} /> 可视化编辑
+         <Type size={14} /> {t('visual_editors.visual_editing')}
        </div>
        {rootNode ? (
          <TreeNode node={rootNode} depth={0} />
        ) : (
-         <div className="text-sm text-slate-400 text-center py-4">无法解析思维导图结构</div>
+         <div className="text-sm text-slate-400 text-center py-4">{t('visual_editors.cant_parse_mindmap')}</div>
        )}
     </div>
   );

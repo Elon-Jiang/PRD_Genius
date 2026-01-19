@@ -1,8 +1,10 @@
+// ... (imports)
 import React, { useState, useEffect } from 'react';
 import { Bot } from 'lucide-react';
 import { Step, PrdState, LoadingState, ChatMessage } from './types';
 import * as GeminiService from './services/geminiService';
 import { useUndoRedo } from './hooks/useUndoRedo';
+import { useTranslation } from 'react-i18next';
 
 // Components
 import Sidebar from './components/Sidebar';
@@ -16,6 +18,8 @@ import PrototypeStep from './components/steps/PrototypeStep';
 import PrdDocument from './components/PrdDocument';
 
 const App: React.FC = () => {
+  const { t, i18n } = useTranslation();
+  
   // --- State ---
   const [currentStep, setCurrentStep] = useState<Step>(Step.INPUT);
   const [loading, setLoading] = useState<LoadingState>({ isGenerating: false, message: '' });
@@ -31,12 +35,21 @@ const App: React.FC = () => {
     {
       id: 'welcome',
       role: 'ai',
+      // We'll update this effect to localize the initial message if needed, 
+      // but keeping state simple for now. 
+      // Ideally, specific initial messages should be handled via useEffect or cleared on lang change.
       content: '你好！我是你的 AI 产品助手。有什么可以帮你的吗？你可以问我关于市场调研、竞品数据或者任何产品设计的问题。',
       timestamp: Date.now()
     }
   ]);
 
+  // Update initial welcome message when language changes
+  useEffect(() => {
+     // Optional: You might want to reset chat or just add a new welcome message
+  }, [i18n.language]);
+
   // Undo/Redo Hook for PRD Data
+  // ... (rest of hook)
   const {
     data,
     setData,
@@ -56,7 +69,7 @@ const App: React.FC = () => {
     prototypeHtml: '',
   });
 
-  // Keyboard Shortcuts
+  // ... (keyboard shortcuts)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'z') {
@@ -83,9 +96,9 @@ const App: React.FC = () => {
     if (!data.description) return;
     commitNow();
     
-    setLoading({ isGenerating: true, message: '正在拆解需求...' });
+    setLoading({ isGenerating: true, message: t('common.generating') });
     try {
-      const result = await GeminiService.generateBreakdown(data.description);
+      const result = await GeminiService.generateBreakdown(data.description, i18n.language);
       setData(prev => ({
         ...prev,
         features: result.features,
@@ -102,9 +115,9 @@ const App: React.FC = () => {
 
   const handleGenerateAnalysis = async () => {
     commitNow();
-    setLoading({ isGenerating: true, message: '正在进行竞品分析...' });
+    setLoading({ isGenerating: true, message: t('common.generating') });
     try {
-      const result = await GeminiService.generateAnalysis(data.productName || 'Product', data.description);
+      const result = await GeminiService.generateAnalysis(data.productName || 'Product', data.description, i18n.language);
       setData(prev => ({ ...prev, competitorAnalysis: result }));
       setCurrentStep(Step.ANALYSIS);
     } catch (error) {
@@ -116,9 +129,9 @@ const App: React.FC = () => {
 
   const handleGenerateDiagrams = async () => {
     commitNow();
-    setLoading({ isGenerating: true, message: '正在绘制流程图...' });
+    setLoading({ isGenerating: true, message: t('common.generating') });
     try {
-      const result = await GeminiService.generateDiagram(data.features);
+      const result = await GeminiService.generateDiagram(data.features, i18n.language);
       setData(prev => ({ ...prev, mermaidDiagram: result }));
       setCurrentStep(Step.DIAGRAMS);
     } catch (error) {
@@ -130,12 +143,13 @@ const App: React.FC = () => {
 
   const handleGenerateMindMap = async () => {
     commitNow();
-    setLoading({ isGenerating: true, message: '正在构建思维导图...' });
+    setLoading({ isGenerating: true, message: t('common.generating') });
     try {
       const result = await GeminiService.generateMindMap(
         data.productName || 'Product', 
         data.features, 
-        data.userStories
+        data.userStories,
+        i18n.language
       );
       setData(prev => ({ ...prev, mindMap: result }));
       setCurrentStep(Step.MINDMAP);
@@ -148,9 +162,9 @@ const App: React.FC = () => {
 
   const handleGeneratePrototype = async () => {
     commitNow();
-    setLoading({ isGenerating: true, message: '正在编写原型代码...' });
+    setLoading({ isGenerating: true, message: t('common.generating') });
     try {
-      const result = await GeminiService.generatePrototype(data.features, data.description);
+      const result = await GeminiService.generatePrototype(data.features, data.description, i18n.language);
       setData(prev => ({ ...prev, prototypeHtml: result }));
       setCurrentStep(Step.PROTOTYPE);
     } catch (error) {
@@ -187,23 +201,23 @@ const App: React.FC = () => {
     
     try {
       if (currentStep === Step.BREAKDOWN) {
-        const result = await GeminiService.refineBreakdown(data.features, data.userStories, refinementInput);
+        const result = await GeminiService.refineBreakdown(data.features, data.userStories, refinementInput, i18n.language);
         setData(prev => ({
           ...prev,
           features: result.features,
           userStories: result.userStories
         }));
       } else if (currentStep === Step.ANALYSIS) {
-         const result = await GeminiService.refineAnalysis(data.competitorAnalysis, refinementInput);
+         const result = await GeminiService.refineAnalysis(data.competitorAnalysis, refinementInput, i18n.language);
          setData(prev => ({ ...prev, competitorAnalysis: result }));
       } else if (currentStep === Step.DIAGRAMS) {
-        const result = await GeminiService.refineDiagram(data.mermaidDiagram, refinementInput);
+        const result = await GeminiService.refineDiagram(data.mermaidDiagram, refinementInput, i18n.language);
         setData(prev => ({ ...prev, mermaidDiagram: result }));
       } else if (currentStep === Step.MINDMAP) {
-        const result = await GeminiService.refineMindMap(data.mindMap, refinementInput);
+        const result = await GeminiService.refineMindMap(data.mindMap, refinementInput, i18n.language);
         setData(prev => ({ ...prev, mindMap: result }));
       } else if (currentStep === Step.PROTOTYPE) {
-        const result = await GeminiService.refinePrototype(data.prototypeHtml, refinementInput);
+        const result = await GeminiService.refinePrototype(data.prototypeHtml, refinementInput, i18n.language);
         setData(prev => ({ ...prev, prototypeHtml: result }));
       }
       setRefinementInput('');
@@ -232,7 +246,7 @@ const App: React.FC = () => {
 
     try {
       const history = chatMessages.map(msg => ({ role: msg.role, content: msg.content }));
-      const responseText = await GeminiService.sendChatMessage(history, newUserMsg.content);
+      const responseText = await GeminiService.sendChatMessage(history, newUserMsg.content, i18n.language);
       
       const newAiMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
