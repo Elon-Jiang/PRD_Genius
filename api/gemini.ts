@@ -354,15 +354,19 @@ async function handleGenerateDiagram({ features }, res) {
     1. Use Chinese (Simplified) for the node labels.
     2. CRITICAL: You MUST enclose ALL node labels in double quotes.
        Correct: NodeA["用户注册"]
-       Incorrect: NodeA[用户注册]
-    3. CRITICAL: Match your brackets correctly! 
+       Incorrect: NodeA[user register]
+    3. **CRITICAL: DO NOT USE Double Quotes (") INSIDE the node content.**
+       Incorrect: NodeA["显示"错误""]
+       Incorrect: NodeA["显示\"错误\""]
+       **Correct**: NodeA["显示'错误'"] (Use single quotes or Chinese quotes “”)
+    4. CRITICAL: Match your brackets correctly! 
        - For Standard Nodes: use square brackets [ ]. Example: A["开始"]
        - For Decision Nodes: use curly braces { }. Example: B{"验证通过?"}
        - DO NOT MIX brackets. Example INCORRECT: C{"错误"]
-    4. CRITICAL: Do NOT use subgraphs. Keep the graph flat to ensure compatibility with the visual editor.
-    5. CRITICAL: Put each node definition and link on a NEW LINE.
-    6. CRITICAL: Always use spaces around arrows to ensure parser compatibility. Example: A --> B (not A-->B).
-    7. Use standard IDs like NodeA, NodeB, etc.
+    5. CRITICAL: Do NOT use subgraphs. Keep the graph flat to ensure compatibility with the visual editor.
+    6. CRITICAL: Put each node definition and link on a NEW LINE.
+    7. CRITICAL: Always use spaces around arrows to ensure parser compatibility. Example: A --> B (not A-->B).
+    8. Use standard IDs like NodeA, NodeB, etc.
   `;
 
   const response = await ai.models.generateContent({
@@ -370,7 +374,7 @@ async function handleGenerateDiagram({ features }, res) {
     contents: prompt,
   });
 
-  let code = response.text || "";
+  let code = getResponseText(response);
   code = code
     .replace(/```mermaid/g, "")
     .replace(/```/g, "")
@@ -392,6 +396,7 @@ async function handleRefineDiagram({ currentCode, feedback }, res) {
     - Maintain valid Mermaid syntax (graph TD).
     - Return ONLY the raw mermaid code string.
     - CRITICAL: Ensure ALL node labels are enclosed in double quotes.
+    - **CRITICAL: NO Double Quotes INSIDE labels.** Use single quotes if needed.
     - CRITICAL: Match brackets. [] for Process, {} for Decision. Do not mix them.
     - CRITICAL: Do NOT use subgraphs.
     - CRITICAL: Ensure every statement is on a NEW LINE.
@@ -403,7 +408,7 @@ async function handleRefineDiagram({ currentCode, feedback }, res) {
     contents: prompt,
   });
 
-  let code = response.text || "";
+  let code = getResponseText(response);
   code = code
     .replace(/```mermaid/g, "")
     .replace(/```/g, "")
@@ -470,7 +475,7 @@ async function handleGenerateMindMap(
     contents: prompt,
   });
 
-  let code = response.text || "";
+  let code = getResponseText(response);
   code = code
     .replace(/```mermaid/g, "")
     .replace(/```/g, "")
@@ -507,7 +512,7 @@ async function handleRefineMindMap({ currentCode, feedback }, res) {
     config: { thinkingConfig: { thinkingBudget: 1024 } },
   });
 
-  let code = response.text || "";
+  let code = getResponseText(response);
   code = code
     .replace(/```mermaid/g, "")
     .replace(/```/g, "")
@@ -519,7 +524,7 @@ async function handleGeneratePrototype({ features, description }, res) {
   // Use names only to keep the prompt smaller to avoid RPC errors
   const featureList = features.map((f) => `${f.name}`).join(", ");
 
-  const prompt = `
+    const prompt = `
     Act as a **World-Class Frontend Architect**.
     Create a **High-Fidelity, Single-Page Application (SPA)** prototype.
     
@@ -528,36 +533,42 @@ async function handleGeneratePrototype({ features, description }, res) {
     Key Features: ${featureList}
     
     **CRITICAL REQUIREMENT: DESKTOP-ONLY WEB DASHBOARD**
-    Analyze the description to identify at least 2-3 key User Roles (e.g., User, Admin, etc.) specific to this product.
-    You MUST create a **Multi-View System** contained in a single HTML file that allows switching between these roles.
+    Analyze the description to determine the necessary User Roles.
+    - **Flexible Logic**: Do NOT force "Admin" vs "User" if not needed.
+      - If it's a B2C tool (e.g., calculator, simple editor), create a **Single View** (No role switcher).
+      - If it's a B2B/Platform tool (e.g., CRM, CMS), create **Multiple Views** (e.g., Admin, User) and a "Switch Role" mechanism.
     
     1.  **Architecture (SPA):**
-        - **Target Device**: DESKTOP WEB ONLY. Do NOT implement mobile hamburgers or responsive collapsing logic unless absolutely necessary for layout. Assume a wide screen (1440px+).
+        - **Target Device**: DESKTOP WEB ONLY. Wide screen (1440px+).
         - **Layout**: Sidebar Navigation (Left), Header (Top), Main Content Area (Center).
-        - **Role Switching**: Implement a prominent "Switch Role" dropdown in the Header or Sidebar to toggle between the identified roles instantly.
+        - **Role Switching**: **ONLY** if multiple roles are detected, add a dropdown in Header/Sidebar to toggle roles.
     
-    2.  **Design System (Dark Tech / Dia Browser Style):**
-        - **Theme**: Dark Mode default. Use 'bg-slate-900', 'text-slate-100'.
-        - **Glassmorphism**: Use 'bg-white/5', 'backdrop-blur-xl', 'border-white/10'.
-        - **Accents**: Neon gradients (blue/purple/cyan) for active states.
-        - **Components**: Rounded corners (rounded-xl), subtle shadows, floating cards.
+    2.  **Design System (Modern Minimalist / Apple Style):**
+        - **Theme**: Light Mode / Premium Clean. 
+          - Background: 'bg-slate-50' or 'bg-white'.
+          - Text: 'text-slate-900' (primary), 'text-slate-500' (secondary).
+        - **Aesthetics**: "Apple Human Interface" or "Google Material 3" vibe.
+          - **Cards**: White bg, subtle shadow ('shadow-sm' or 'shadow-md'), rounded-2xl ('rounded-2xl').
+          - **Borders**: Very subtle ('border-slate-200').
+        - **Accents**: Use a **Single, Elegant Primary Color** (e.g., Indigo-600, Blue-600, or Violet-600) for buttons and active states. Do NOT use neon gradients.
+        - **Typography**: Clean, readable sans-serif (Inter/system-ui).
     
     3.  **Required Functionality (Vanilla JS):**
         - **Navigation**: Clicking sidebar links must update the main content area dynamically.
         - **Interactivity**: 
           - Tabs for switching content.
           - Modals for forms.
-          - Toast notifications for actions (e.g., "Saved successfully").
-        - **Charts**: Use Chart.js (via CDN) for Analytics dashboards where appropriate.
-        - **Tables**: Create detailed, realistic data tables with status badges and action buttons.
+          - Toast notifications for actions.
+        - **Charts**: Use Chart.js (via CDN) for Analytics where appropriate.
+        - **Tables**: Clean, spacious tables with status badges.
     
     4.  **Content Depth:**
-        - **Dynamic Roles**: For each identified role, create specific views and dashboards relevant to their tasks.
+        - **Dynamic Views**: Create specific views relevant to the identified logic (Single or Multi-role).
         - **Detailed Features**: Implement the UI for the "Key Features" listed above.
-        - **Realistic Data**: Use mock data relevant to the **${description}** industry. No "Lorem Ipsum".
+        - **Realistic Data**: Use mock data relevant to the **${description}** industry.
         - **Language**: Chinese (Simplified).
 
-    5. **CRITICAL SECURITY & STABILITY RULES:**
+    5.  **CRITICAL SECURITY & STABILITY RULES:**
         - **NO External Links**: Do NOT use <a href="..."> for navigation. It will crash the iframe.
         - **Use OnClick**: For all navigation (Sidebar, Role Switch), use 'onclick="showSection(id)"' or similar.
         - **Safe Anchors**: If you must use <a> tags, set href="javascript:void(0)".
@@ -575,7 +586,10 @@ async function handleGeneratePrototype({ features, description }, res) {
 
   // Streaming response
   for await (const chunk of result) {
-    res.write(chunk.text());
+    const text = getChunkText(chunk);
+    if (text) {
+      res.write(text);
+    }
   }
   res.end();
 }
@@ -589,8 +603,8 @@ async function handleRefinePrototype({ currentHtml, feedback }, res) {
     
     Task: Update the HTML code to satisfy the user's request.
     - **Target**: DESKTOP WEB ONLY. Keep it wide and detailed.
-    - **Maintain the High-Fidelity Dark Tech Style**: Keep glassmorphism, neon accents.
-    - **Maintain Multi-Role Logic**: Do not break the JavaScript role switching logic.
+    - **Maintain the Design System**: Modern Minimalist, Clean, Apple/Google Style (Light mode, soft shadows).
+    - **Maintain Logic**: Do not break existing logical flows (Role switching or Single view).
     - **CRITICAL SECURITY**: Do NOT introduce <a href="..."> links. Use JS onclick for everything. href must be "javascript:void(0)".
     - Return ONLY the raw HTML code.
     - Ensure all new text is in Chinese (Simplified).
@@ -606,9 +620,40 @@ async function handleRefinePrototype({ currentHtml, feedback }, res) {
 
   // Streaming response
   for await (const chunk of result) {
-    res.write(chunk.text());
+    const text = getChunkText(chunk);
+    if (text) {
+      res.write(text);
+    }
   }
   res.end();
+}
+
+// Helper to safely extract text from Gemini chunk
+function getChunkText(chunk: any): string {
+  if (typeof chunk.text === 'function') {
+    return chunk.text();
+  }
+  if (typeof chunk.text === 'string') {
+    return chunk.text;
+  }
+  if (chunk.candidates && chunk.candidates[0] && chunk.candidates[0].content && chunk.candidates[0].content.parts && chunk.candidates[0].content.parts[0]) {
+    return chunk.candidates[0].content.parts[0].text || '';
+  }
+  return '';
+}
+
+// Helper to safely extract text from Gemini response (non-stream)
+function getResponseText(response: any): string {
+  if (typeof response.text === 'function') {
+    return response.text();
+  }
+  if (typeof response.text === 'string') {
+    return response.text;
+  }
+  if (response.response && typeof response.response.text === 'function') {
+      return response.response.text();
+  }
+  return '';
 }
 
 async function handleChat({ history, message }, res) {
@@ -626,6 +671,6 @@ async function handleChat({ history, message }, res) {
 
   const result = await chat.sendMessage({ message });
   return res.json({
-    text: result.text || "Sorry, I couldn't generate a response.",
+    text: getResponseText(result) || "Sorry, I couldn't generate a response.",
   });
 }
